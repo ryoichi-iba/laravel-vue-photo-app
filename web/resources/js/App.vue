@@ -37,7 +37,7 @@ export default {
       immediate: true
     },
     $route () {
-      this.$store.coomit('error/setCode', null)
+      this.$store.commit('error/setCode', null)
     }
   }
 }
