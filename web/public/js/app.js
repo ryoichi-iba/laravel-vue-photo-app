@@ -1922,6 +1922,7 @@ module.exports = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Navbar_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Navbar.vue */ "./resources/js/components/Navbar.vue");
 /* harmony import */ var _components_Footer_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Footer.vue */ "./resources/js/components/Footer.vue");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./resources/js/util.js");
 //
 //
 //
@@ -1936,12 +1937,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     Navbar: _components_Navbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     Footer: _components_Footer_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  computed: {
+    errorCode: function errorCode() {
+      return this.$store.state.error.code;
+    }
+  },
+  watch: {
+    errorCode: {
+      handler: function handler(val) {
+        if (val === _util__WEBPACK_IMPORTED_MODULE_2__["INTERNAL_SERVER_ERROR"]) {
+          this.$router.push('/500');
+        }
+      },
+      immediate: true
+    },
+    $route: function $route() {
+      this.$store.coomit('error/setCode', null);
+    }
   }
 });
 
@@ -2145,7 +2165,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 // トップページに移動する
-                _this.$router.push('/');
+                if (_this.apiStatus) {
+                  _this.$router.push('/');
+                }
 
               case 3:
               case "end":
@@ -2177,6 +2199,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee2);
       }))();
+    }
+  },
+  computed: {
+    apiStatus: function apiStatus() {
+      return this.$store.state.auth.apiStatus;
     }
   }
 });
