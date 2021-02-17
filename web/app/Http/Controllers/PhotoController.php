@@ -14,13 +14,27 @@ class PhotoController extends Controller
     public function __construct()
     {
         // 認証が必要
-        $this->middleware('auth')->except(['index']);
+        $this->middleware('auth')->except(['index', 'download']);
     }
 
     public function index() {
         $photos = Photo::with(['owner'])->orderBy(Photo::CREATED_AT,'desc')->paginate();
 
         return $photos;
+    }
+
+    public function download(Photo $photo) {
+        if(! Storage::cloud()->exists($photo->filename)) {
+            about(404);
+        }
+
+        $disposition = 'attachment; filename="' . $photo->filename . '"';
+        $headers = [
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => $disposition,
+        ];
+
+        return response(Storage::cloud()->get($photo->filename), 200, $headers);
     }
 
     /**
