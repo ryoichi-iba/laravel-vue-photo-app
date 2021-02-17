@@ -10,6 +10,15 @@ class Photo extends Model
     /** プライマリキーの型 */
     protected $keyType = 'string';
 
+    protected $appends = [
+        'url',
+    ];
+
+    /** JSONに含める属性 */
+    protected $visible = [
+        'id', 'owner', 'url',
+    ];
+
     /** IDの桁数 */
     const ID_LENGTH = 12;
 
@@ -52,5 +61,19 @@ class Photo extends Model
         }
 
         return $id;
+    }
+
+    public function owner() 
+    {
+        return $this->belongsTo('App\User','user_id','id', 'users');
+    }
+
+    /**
+     * アクセサ - url
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return Storage::cloud()->url($this->attributes['filename']);
     }
 }
